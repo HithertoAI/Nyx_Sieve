@@ -1,44 +1,45 @@
-# Nyx_Sieve
-More than an accessibility browser
 # 🌑 Nyx Sieve
+**From Chaos, Meaning.**
 
-## From Chaos, Meaning.
-
-Nyx Sieve is the flagship browser implementation of the **Project Universal Protocol (PUP)**. In a digital world born of chaos—where 1.1 billion websites remain non-compliant and "dirty"—Nyx Sieve acts as the formidable, mediated layer that translates the noise of the internet into a clean, semantic, and visceral human experience.
-
-We don't ask the web to change; we force the web to adapt to the human sensorium.
+Nyx Sieve is the flagship implementation of the Project Universal Protocol (PUP). In a digital world born of chaos—where 1.1 billion websites remain non-compliant—Nyx Sieve acts as the formidable, mediated layer that translates the "darkness" of inaccessible data into a clean, semantic, and visceral human experience.
 
 ## 🏛 The Architecture of the Daughter
+Nyx Sieve replaces "compliance checklists" with a Triple-Layer Proxy that translates the world in real-time:
 
-Nyx Sieve replaces the "Accessibility Tax" of the modern web with a **Triple-Layer Proxy** designed for universal agency:
+### Layer 1: The Bauta Valve (Privacy & Sovereignty)
+- A modular, four-chamber data sieve that anonymizes all environmental and personal data at the source.
+- Utilizes Zero-Persistence ephemeral processing, where memory is wiped at every gate.
 
-### 1. The Intake (The Chaos)
-- The browser hits the "dirty" web—chaotic JavaScript, missing alt-text, and broken hierarchies. This is the raw material of the digital world.
+### Layer 2: The Keating Model (Intent & Workflow)
+- A sophisticated "Human-in-the-Loop" engine that captures Intent-to-Action maps.
+- Understands what the user is trying to achieve and optimizes the interface to meet that goal.
 
-### 2. The Bauta Valve (The Sieve)
-- Our "Secret Sauce" and privacy moat.
-- **Chamberized Sifting:** A four-chamber logic that sifts through raw telemetry to ensure no Personally Identifiable Information (PII) ever leaves the user's local "vault".
-- **Zero-Persistence:** Each data chamber performs a specific task and undergoes a "State-Wipe," making "spying" mathematically and structurally impossible.
+### Layer 3: The Universal Output (Multi-Modal Streams)
+- *"Night-Seeing"*: Translates visual geometry and color relativity into tactile textures via the HDPS-1 Haptic Sleeve.
+- "Night-Hearing": Translates acoustic presence and emotional tone into visceral, felt frequencies.
 
-### 3. The Keating Model (The Intent)
-- While the Valve protects the user, the Keating Model captures the **Intent-to-Action map**.
-- It understands what the user is trying to achieve—whether paying a bill or designing a car—and optimizes reconstruction to satisfy that intent.
-- It captures *"Anihilized Workflow Corpora"* that serve as ethical data for AI development.
+## 🦾 Hardware Targets (2026 Baseline)
+To achieve "Digital Synesthesia" with zero lag, Nyx Sieve is optimized for high-performance 2026-standard SoCs:
 
-### 4. The Reconstruction (The Aether)
-- The output is a streamed, perfectly semantic version of reality.
-- **Night-Seeing:** Translates visual density into spatial haptic frequencies via the World-Sensing Sleeve.
-- **Night-Hearing:** Visualizes acoustic presence and emotional tone for hearing-challenged users.
-- **Cognitive Filtering:** Strips away *"Dark Patterns"* and sensory overload for neurodivergent users.
+| Component | Specification | Purpose |
+| --- | --- | --- |
+| NPU (AI Engine) | 40 – 100+ TOPS | Real-time AI Vision & localized Bauta Valve sifting. |
+| Connectivity | Wi-Fi 7 / FastConnect 7800 | Sub-10ms latency for haptic "Presence". |
+| Memory | 16GB LPDDR5x (Unified) | High-bandwidth multi-modal data streams. |
+| Power Profile | < 1.5W (Total Platform) | Thermal safety for skin-contact wearables. |
+| Actuator Bus | High-Density Piezoelectric | Driving spatial haptic frequencies (Skin-Stretch). |
 
 ## 💎 The Economic Engine: Ethical Data
+Nyx Sieve is Free-to-User. We fund the "Inclusion Flywheel" by licensing Anonymized Workflow Corpora to developers of Autonomous Vehicles, Robotics, and LLMs who require "Ethical Data" to train more human-centric agents.
 
-Nyx Sieve is free for users. We fund our **Inclusion Flywheel** by licensing our PII-free Workflow Corpora to AI developers seeking "clean" human data.
+## 🚀 The "User-Twin" Calibration
+Nyx Sieve does not use a "Settings" menu; it conducts a Stateful Calibration to build a User-Twin Profile that lives exclusively in a Bauta-sealed local chamber.
+- **Spatial Calibration:** Defines the haptic frequencies that feel like "primary actions" to the specific user.
+- **Intent Calibration:** The Keating Model records how the user builds mental models to optimize navigation.
 
-By simply using this browser to build their lives, users generate high-value datasets that train more empathetic, human-centric models — all while maintaining total data sovereignty.
-
-## 🚀 Vision: Experiential Agency
-
-> "We are moving from a world where humans must adapt to machine limitations, to a world where machines must adapt to humans' unique sensorium."
-
-Nyx Sieve is not merely an *accessibility tool*. It is a **Universal Interface Layer** ensuring every individual—regardless of biological hardware—has the power to see, hear, and build in both physical and digital worlds.
+## 🤝 Contributing
+We prioritize "Intent-based" contributions from Systems Engineers, Haptic UX Designers, and AI Ethicists.
+- **The Bauta Standard:** No function shall store raw user data beyond its execution window.
+- **The Keating Standard:** We do not build "features"; we solve "intents." 
+- **Thermal Awareness:** Logic must be NPU-optimized to prevent thermal discomfort in wearables.
+> "Exclusion is a bug in the interface between the human and the world. We are shipping the universal patch."
