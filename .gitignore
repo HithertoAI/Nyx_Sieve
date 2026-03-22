@@ -1,0 +1,52 @@
+# --- Nyx Sieve Core Security: The Bauta Valve Protocol ---
+# Never commit raw user telemetry or PII (Personally Identifiable Information) [cite: 452, 453]
+/data/raw_intake/ [cite: 454]
+/data/user_pii/ [cite: 455]
+*.log [cite: 456]
+*.telemetry [cite: 457]
+
+# --- AI & Machine Learning (Keating Model) ---
+# Do not track massive weight files; use a model registry or DVC instead [cite: 458, 459]
+*.h5 [cite: 460]
+*.pth [cite: 461]
+*.onnx [cite: 462]
+*.ckpt [cite: 463]
+/models/weights/ [cite: 464]
+/models/exported/ [cite: 465]
+
+# Ignore local datasets used for training the Keating Workflow Corpora [cite: 466]
+/data/training/ [cite: 467]
+/data/validation/ [cite: 468]
+*.csv [cite: 469]
+*.jsonl [cite: 470]
+
+# --- Embedded & Hardware (SoC Firmware) ---
+# Compiled binaries for the Haptic Sleeve/SoC [cite: 471, 472]
+*.bin [cite: 473]
+*.hex [cite: 474]
+*.elf [cite: 475]
+*.out [cite: 476]
+/build/ [cite: 477]
+/bin/ [cite: 478]
+
+# Hardware Design Files (if using KiCad/Altium) [cite: 479]
+*.back [cite: 480]
+*.s#* [cite: 481]
+/hardware/pcb/backups/ [cite: 482]
+
+# --- Environment & Dependency Management ---
+# Python Virtual Environments [cite: 483, 484]
+.venv/ [cite: 485]
+env/ [cite: 486]
+venv/ [cite: 487]
+ENV/ [cite: 488]
+
+# Environment Variables (API Keys for Cloud Inference/Licensing) [cite: 506]
+.env [cite: 507]
+.env.local [cite: 508]
+
+# --- IDE & System Files --- [cite: 512]
+.vscode/ [cite: 513]
+.idea/ [cite: 514]
+.DS_Store [cite: 517]
+Thumbs.db [cite: 518]
