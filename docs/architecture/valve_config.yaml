@@ -1,0 +1,22 @@
+# Nyx Sieve: Bauta Valve Configuration (2026.Q1)
+
+project_name: "Nyx_Sieve"
+protocol_version: "PUP-1.0"
+
+# Purity Levels:
+# 3: Intake -> Anonymizer -> Interface (High Speed)
+# 5: Adds Validator (C) and Auditor (D) (The Mean)
+# 7: Adds Deep Sieve / Multi-layer Bias Correction (High Stakes)
+purity_level: 5 
+
+hardware_targets:
+  [cite_start]npu_min_tops: 40 [cite: 402]
+  [cite_start]latency_threshold_ms: 10 [cite: 407]
+  [cite_start]thermal_limit_watts: 1.5 [cite: 413]
+
+chambers:
+  [cite_start]A: {enabled: true, memory_protocol: "total_purge"} [cite: 368]
+  [cite_start]B: {enabled: true, memory_protocol: "state_wipe"} [cite: 368]
+  [cite_start]C: {enabled: true, memory_protocol: "state_wipe"} [cite: 368]
+  D: {enabled: true, memory_protocol: "recursive_audit"}
+  E: {enabled: true, memory_protocol: "session_termination_wipe"}
