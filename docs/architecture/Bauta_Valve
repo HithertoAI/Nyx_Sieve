@@ -41,3 +41,47 @@ The Valve serves to generate three distinct, high-value, anonymized outputs:
 By the time data leaves the Valve, it is pre-cleared for global data protection compliance (GDPR/CCPA/UK Data Protection). This allows for the licensing of Anonymized Workflow Corpora to fund the Nyx Sieve tool while protecting the user's "Private Chamber".
 
 This structure makes it clear that we aren't just "filtering" data—we are sieving it through a series of intentional, self-cleaning gates.
+
+# 🛡️ Bauta Valve Protocol: Technical Specification
+
+## Architecture
+- Non-Persistent, Multichambered Data Distillation
+- Security Standard: Zero-Persistence Ephemeral Processing
+
+## 1. Executive Summary
+The Bauta Valve is the architectural "Secret Sauce" of Nyx Sieve. It utilizes five isolated, stateless chambers to ensure that no Personally Identifiable Information (PII) ever leaves the user's local hardware chamber. All processing is handled locally on the device's System on a Chip (SoC) to prevent cloud-based data exposure.
+
+### Core Output Targets Actualized
+- **Synthesized Set:** A clean, anonymized, high-fidelity reconstruction of reality.
+- **Synthetic Ideal Set:** A dataset optimized to highlight "Blind Spots" and correct systemic bias.
+- **Clean Custom Set:** Specialized data packets mapped to unique user goals (e.g., "Night-Seeing" haptics).
+
+## 2. The Five-Chamber Logic Flow
+### Chamber A: The Intake
+**Role:** Primary Telemetry Ingestion.
+**Process:** Receives raw visual, audio, and haptic telemetry alongside user-defined intent. It serializes these into secure data packets for Chambers B and D.
+**Memory Protocol:** Total Purge — clears all raw intake, memory, and cache immediately upon packet handoff to the next gate.
+
+### Chamber B: The Anonymizer
+**Role:** PII Symbolization.
+**Process:** Transforms all individual data points into "Anonymized Workflow Patterns." It interprets the user's intent and passes the results to Chambers C and D.
+**Memory Protocol:** State-Wipe — returns to a receptive null-state as soon as Chamber C confirms receipt.
+
+### Chamber C: The Validator & Idealist
+**Role:** Bias Neutralization & Data Integrity.
+**Process:** Identifies missing or corrupted telemetry. It actively constructs the "Ideal Dataset" by removing systemic bias to ensure the output is "Ethical by Design."
+**Memory Protocol:** State-Wipe — all "Idealist" logic is purged upon delivery to Chamber D.
+
+### Chamber D: The Auditor (System Conscience)
+**Role:** Recursive Quality Assurance.
+**Process:** Acts as the final gatekeeper. Checks the work of all preceding chambers against the original user specs.
+**Correction Loop:** If an error is detected, Chamber D initiates a specific "Refine Instruction," forcing the offending chamber to re-process from the point of failure.
+**Memory Protocol:** Total Purge — wipes all audit logs once final verified packets are passed to the interface layer.
+
+### Chamber E: The Interface & Delivery
+**Role:** User Agency Layer.
+**Process:** Interacts with the user to deliver the semantic reconstruction (e.g., streaming haptics to the sleeve).
+**Memory Protocol:** Session Termination Wipe — once the user session ends, returns to a receptive state with zero memory of prior process.
+
+## 3. The "Inclusion Flywheel" Result
+Because this process is mathematically private, the resulting Anonymized Workflow Corpora can be licensed to fund free tools. It turns the "Accessibility Tax" into a high-value data pipeline for next-generation human-centric AI.
