@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nyx Sieve // Bauta-Keating Architecture // PUP 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       DAUGHTER OF CHAOS — CSS DESIGN SYSTEM
+    ===================================================== */
+    :root {
+      --void:           #060b16;
+      --deep-slate:     #0d1526;
+      --slate:          #111f35;
+      --chamber-bg:     #0a1020;
+      --border:         #1e3050;
+      --border-dim:     #152038;
+      --text-primary:   #eef2f8;
+      --text-secondary: #8da4bf;
+      --text-dim:       #3d5470;
+
+      --electric:       #38bdf8;
+      --electric-glow:  rgba(56, 189, 248, 0.18);
+      --electric-deep:  rgba(56, 189, 248, 0.06);
+      --nyx:            #a78bfa;
+      --nyx-glow:       rgba(167, 139, 250, 0.15);
+      --aether:         #34d399;
+      --aether-glow:    rgba(52, 211, 153, 0.15);
+      --amber:          #fbbf24;
+      --wipe-color:     rgba(129, 140, 248, 0.45);
+
+      --font-display:   'Syncopate', sans-serif;
+      --font-mono:      'Space Mono', monospace;
+      --font-body:      'Barlow', sans-serif;
+
+      --radius:         3px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(56,189,248,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,0.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* vignette */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(6,11,22,0.7) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6, 11, 22, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .wordmark {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .wordmark-bar {
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--electric), var(--nyx), transparent);
+    }
+
+    .header-center {
+      text-align: center;
+      flex: 1;
+    }
+
+    .header-tagline {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--nyx);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .header-sub {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-weight: 300;
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .header-vitals {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 2;
+      flex-shrink: 0;
+    }
+
+    .vital-live { color: var(--aether); }
+
+    /* =====================================================
+       MAIN TWO-COLUMN LAYOUT
+    ===================================================== */
+    .main-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      min-height: calc(100vh - 68px - 58px);
+    }
+
+    /* =====================================================
+       LEFT — MONITOR PANEL
+    ===================================================== */
+    .monitor-panel {
+      padding: 36px 40px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--nyx);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-eyebrow::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* BAUTA MONITOR SHELL */
+    .bauta-monitor {
+      background: var(--deep-slate);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .monitor-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-dim);
+      background: rgba(13,21,38,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .monitor-title {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .soc-stats {
+      display: flex;
+      gap: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .soc-stats b { color: var(--electric); font-weight: 700; }
+
+    /* CHAMBER GRID */
+    .chamber-grid {
+      display: flex;
+      gap: 6px;
+      padding: 16px;
+    }
+
+    .chamber {
+      flex: 1;
+      height: 112px;
+      background: var(--chamber-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      gap: 5px;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .ch-dot {
+      position: absolute;
+      top: 7px; right: 7px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.25s ease;
+    }
+
+    .ch-icon {
+      font-size: 1.1rem;
+      opacity: 0.2;
+      transition: opacity 0.25s ease;
+      line-height: 1;
+    }
+
+    .ch-label {
+      font-family: var(--font-mono);
+      font-size: 0.48rem;
+      color: var(--text-dim);
+      letter-spacing: 0.14em;
+      text-align: center;
+      text-transform: uppercase;
+      transition: color 0.25s ease;
+    }
+
+    .ch-status {
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      transition: color 0.25s ease;
+    }
+
+    /* STATE: ACTIVE */
+    .chamber.state-active {
+      border-color: var(--electric);
+      box-shadow: 0 0 22px var(--electric-glow), inset 0 0 24px var(--electric-deep);
+    }
+    .chamber.state-active .ch-dot   { background: var(--electric); animation: dot-blink 0.55s ease infinite alternate; }
+    .chamber.state-active .ch-icon  { opacity: 1; }
+    .chamber.state-active .ch-label { color: var(--electric); }
+    .chamber.state-active .ch-status{ color: var(--electric); }
+
+    /* STATE: WIPING */
+    .chamber.state-wiping { border-color: var(--nyx); }
+
+    /* STATE: DONE */
+    .chamber.state-done {
+      border-color: rgba(52, 211, 153, 0.4);
+    }
+    .chamber.state-done .ch-dot   { background: var(--aether); animation: none; }
+    .chamber.state-done .ch-icon  { opacity: 0.5; }
+    .chamber.state-done .ch-label { color: var(--aether); }
+    .chamber.state-done .ch-status{ color: var(--aether); }
+
+    @keyframes dot-blink {
+      from { opacity: 1; box-shadow: 0 0 5px var(--electric); }
+      to   { opacity: 0.3; box-shadow: none; }
+    }
+
+    /* WIPE SPARK */
+    .wipe-spark {
+      position: absolute;
+      top: 0; left: -110%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, var(--wipe-color), rgba(167,139,250,0.15), transparent);
+      pointer-events: none;
+    }
+
+    .chamber.state-wiping .wipe-spark {
+      animation: wipe-flash 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes wipe-flash {
+      0%   { left: -110%; }
+      100% { left: 115%; }
+    }
+
+    /* PACKET LOG */
+    .packet-log {
+      margin: 0 16px;
+      background: #04080f;
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      height: 148px;
+      overflow-y: auto;
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      line-height: 1.95;
+      color: var(--text-dim);
+      scroll-behavior: smooth;
+    }
+
+    .packet-log::-webkit-scrollbar       { width: 3px; }
+    .packet-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .log-row { display: flex; gap: 10px; animation: log-in 0.18s ease; }
+    @keyframes log-in {
+      from { opacity: 0; transform: translateY(3px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .log-ts { color: var(--text-dim); min-width: 72px; }
+    .log-ch { color: var(--nyx); min-width: 76px; font-weight: 700; }
+    .log-msg            { color: var(--text-dim); }
+    .log-msg.t-proc     { color: var(--electric); }
+    .log-msg.t-wipe     { color: #818cf8; }
+    .log-msg.t-ok       { color: var(--aether); }
+    .log-msg.t-sys      { color: var(--amber); }
+
+    .log-cursor {
+      display: inline-block;
+      width: 5px; height: 9px;
+      background: var(--electric);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: csr 1s step-end infinite;
+    }
+    @keyframes csr { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* CONTROLS */
+    .monitor-controls {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border-dim);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-run {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--void);
+      background: var(--electric);
+      border: none;
+      padding: 10px 22px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.18s, box-shadow 0.18s;
+    }
+    .btn-run:hover:not(:disabled) {
+      background: #7dd3fc;
+      box-shadow: 0 0 18px var(--electric-glow);
+    }
+    .btn-run:disabled { background: var(--text-dim); color: var(--deep-slate); cursor: not-allowed; }
+
+    .btn-reset {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 9px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s;
+      display: none;
+    }
+    .btn-reset:hover  { color: var(--text-secondary); border-color: var(--text-dim); }
+    .btn-reset.show   { display: inline-block; }
+
+    .complete-msg {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--aether);
+      letter-spacing: 0.1em;
+      margin-left: auto;
+      display: none;
+    }
+    .complete-msg.show { display: block; }
+
+    /* ARCHITECTURE NOTE */
+    .arch-note {
+      background: rgba(10,16,32,0.8);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+
+    .arch-note p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      line-height: 1.75;
+    }
+
+    .arch-note p b        { color: var(--text-primary); font-weight: 500; }
+    .arch-note p b.blue   { color: var(--electric); }
+    .arch-note p b.violet { color: var(--nyx); }
+
+    /* =====================================================
+       RIGHT — PITCH SIDEBAR
+    ===================================================== */
+    .pitch-sidebar {
+      background: #08101e;
+      border-left: 1px solid var(--border);
+      padding: 36px 28px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .pitch-sidebar::-webkit-scrollbar       { width: 3px; }
+    .pitch-sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .sb-section h2 {
+      font-family: var(--font-display);
+      font-size: 0.55rem;
+      color: var(--nyx);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .sb-section p {
+      font-size: 0.82rem;
+      color: #b8cce0;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .sb-section p b { color: var(--text-primary); font-weight: 500; }
+
+    /* Flywheel steps */
+    .fw-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .fw-steps li {
+      font-size: 0.8rem;
+      color: #b8cce0;
+      font-weight: 300;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.65;
+    }
+    .fw-steps li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--electric);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+    }
+    .fw-steps li b { color: var(--text-primary); font-weight: 500; }
+    .fund-note {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--aether);
+      letter-spacing: 0.05em;
+    }
+
+    /* Stakeholder table */
+    .sh-table { width: 100%; border-collapse: collapse; }
+    .sh-table td {
+      padding: 9px 6px;
+      font-size: 0.77rem;
+      border-bottom: 1px solid var(--border-dim);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .sh-table td:first-child {
+      font-family: var(--font-mono);
+      font-size: 0.56rem;
+      color: var(--electric);
+      font-weight: 700;
+      white-space: nowrap;
+      padding-right: 14px;
+      width: 76px;
+      letter-spacing: 0.1em;
+    }
+    .sh-table td:last-child { color: #b8cce0; font-weight: 300; }
+
+    /* Spec list */
+    .spec-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .spec-list li {
+      font-size: 0.78rem;
+      color: #b8cce0;
+      font-weight: 300;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .spec-list li b {
+      font-family: var(--font-mono);
+      font-size: 0.56rem;
+      color: var(--electric);
+      font-weight: 700;
+      white-space: nowrap;
+      min-width: 88px;
+      letter-spacing: 0.06em;
+    }
+
+    /* Use case chips */
+    .use-cases { display: flex; flex-direction: column; gap: 8px; }
+    .use-case-card {
+      background: rgba(13,21,38,0.6);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .use-case-card:hover { border-color: rgba(167,139,250,0.3); }
+    .uc-tag {
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      color: var(--nyx);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      padding-top: 2px;
+      min-width: 72px;
+    }
+    .uc-desc {
+      font-size: 0.76rem;
+      color: #b8cce0;
+      font-weight: 300;
+      line-height: 1.55;
+    }
+
+    /* =====================================================
+       DEEP SPEC — TABS
+    ===================================================== */
+    .deep-spec {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      background: var(--deep-slate);
+    }
+
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      overflow-x: auto;
+    }
+    .tab-bar::-webkit-scrollbar { height: 0; }
+
+    .tab-btn {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 16px 22px;
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s;
+      white-space: nowrap;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--text-secondary); }
+    .tab-btn.active { color: var(--electric); border-bottom-color: var(--electric); }
+
+    .tab-pane { display: none; padding: 44px 40px; animation: pane-in 0.28s ease; }
+    .tab-pane.active { display: block; }
+    @keyframes pane-in {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-inner { max-width: 860px; }
+
+    .tab-h {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      color: var(--nyx);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .tab-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+      margin-bottom: 28px;
+      line-height: 1.75;
+    }
+    .tab-desc b { color: var(--text-primary); font-weight: 500; }
+    .tab-desc em { color: var(--nyx); font-style: italic; }
+
+    .sub-h {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin: 32px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    /* Data tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      margin-bottom: 8px;
+    }
+    .data-table th {
+      text-align: left;
+      color: var(--nyx);
+      font-size: 0.56rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 400;
+    }
+    .data-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border-dim);
+      color: #b8cce0;
+      vertical-align: top;
+      line-height: 1.55;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 300;
+    }
+    .data-table td:first-child {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      color: var(--electric);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .data-table tr:hover td { background: rgba(56,189,248,0.025); }
+
+    /* Frequency map bars */
+    .freq-map { display: flex; flex-direction: column; gap: 8px; margin: 20px 0; }
+    .freq-row { display: flex; align-items: center; gap: 12px; }
+    .freq-label {
+      font-family: var(--font-mono);
+      font-size: 0.56rem;
+      color: var(--text-secondary);
+      width: 64px;
+      text-align: right;
+      letter-spacing: 0.06em;
+    }
+    .freq-track {
+      flex: 1;
+      height: 20px;
+      background: var(--chamber-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    .freq-fill {
+      height: 100%;
+      border-radius: 1px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+    }
+    .freq-fill span {
+      font-family: var(--font-mono);
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+    .freq-hz {
+      font-family: var(--font-mono);
+      font-size: 0.56rem;
+      color: var(--text-dim);
+      min-width: 110px;
+      text-align: left;
+    }
+
+    /* Calibration cards */
+    .cal-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin-top: 16px; }
+    .cal-card {
+      background: var(--chamber-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .cal-card:hover { border-color: rgba(167,139,250,0.35); }
+    .cal-need  { font-family: var(--font-mono); font-size: 0.56rem; color: var(--electric); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 5px; }
+    .cal-focus { font-size: 0.78rem; color: var(--nyx); font-weight: 500; margin-bottom: 9px; }
+    .cal-desc  { font-size: 0.77rem; color: #b8cce0; font-weight: 300; line-height: 1.6; }
+    .cal-desc b { color: var(--aether); font-weight: 500; }
+
+    /* Flywheel diagram */
+    .fw-diagram {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 28px 0;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .fw-node {
+      flex: 1;
+      min-width: 110px;
+      background: var(--chamber-bg);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 16px 12px;
+      text-align: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .fw-node:hover {
+      border-color: var(--electric);
+      box-shadow: 0 0 14px var(--electric-glow);
+    }
+    .fw-num  { font-family: var(--font-mono); font-size: 0.56rem; color: var(--electric); margin-bottom: 5px; letter-spacing: 0.08em; }
+    .fw-name { font-family: var(--font-display); font-size: 0.5rem; letter-spacing: 0.12em; color: var(--text-primary); margin-bottom: 8px; text-transform: uppercase; }
+    .fw-desc { font-size: 0.72rem; color: var(--text-secondary); font-weight: 300; line-height: 1.5; }
+    .fw-arr  { font-family: var(--font-mono); color: var(--electric); font-size: 0.9rem; opacity: 0.5; padding: 0 2px; }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      background: rgba(6,11,22,0.85);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-quote {
+      font-size: 0.78rem;
+      font-style: italic;
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+
+    .footer-meta {
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+      letter-spacing: 0.06em;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 860px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .pitch-sidebar { border-left: none; border-top: 1px solid var(--border); }
+      header { padding: 0 20px; }
+      header .header-center { display: none; }
+      .monitor-panel { padding: 24px 20px; }
+      .tab-bar { padding: 0 20px; }
+      .tab-pane { padding: 28px 20px; }
+      footer { flex-direction: column; gap: 10px; text-align: center; padding: 18px 20px; }
+      .footer-meta { text-align: center; }
+      .chamber-grid { flex-wrap: wrap; }
+      .chamber { min-width: calc(33% - 4px); }
+      .cal-grid { grid-template-columns: 1fr; }
+      .fw-diagram { flex-direction: column; align-items: stretch; }
+    }
+
+    @media (max-width: 480px) {
+      .chamber { min-width: calc(50% - 3px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <div class="wordmark">
+    NYX SIEVE
+    <div class="wordmark-bar"></div>
+  </div>
+
+  <div class="header-center">
+    <div class="header-tagline">Bauta-Keating Architecture &nbsp;//&nbsp; Project Universal Protocol</div>
+    <div class="header-sub">Universal Sensory Agency via On-Device AI &nbsp;—&nbsp; 2026 Specification</div>
+  </div>
+
+  <div class="header-vitals">
+    NPU: <span class="vital-live">40+ TOPS</span> &nbsp;|&nbsp;
+    LAT: <span class="vital-live">&lt;10ms</span> &nbsp;|&nbsp;
+    POWER: <span class="vital-live">&lt;1.5W</span>
+  </div>
+</header>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-layout">
+
+  <!-- ========== LEFT: MONITOR ========== -->
+  <section class="monitor-panel">
+    <div class="section-eyebrow">Bauta Valve &nbsp;// Logic &amp; Privacy Stream Monitor</div>
+
+    <div class="bauta-monitor">
+      <div class="monitor-header">
+        <span class="monitor-title">Chamberized Sifting — Zero-Persistence Protocol</span>
+        <div class="soc-stats">
+          <span>NPU: <b id="stat-tops">42.0</b> TOPS</span>
+          <span>LAT: <b id="stat-lat">7.2</b>ms</span>
+          <span>PWR: <b id="stat-pwr">0.91</b>W</span>
+        </div>
+      </div>
+
+      <!-- CHAMBERS A–E -->
+      <div class="chamber-grid">
+
+        <div class="chamber" id="ch-a">
+          <div class="ch-dot"></div>
+          <div class="ch-icon">⟳</div>
+          <div class="ch-label">A: Intake</div>
+          <div class="ch-status">IDLE</div>
+          <div class="wipe-spark"></div>
+        </div>
+
+        <div class="chamber" id="ch-b">
+          <div class="ch-dot"></div>
+          <div class="ch-icon">⊘</div>
+          <div class="ch-label">B: Anonymizer</div>
+          <div class="ch-status">IDLE</div>
+          <div class="wipe-spark"></div>
+        </div>
+
+        <div class="chamber" id="ch-c">
+          <div class="ch-dot"></div>
+          <div class="ch-icon">✓</div>
+          <div class="ch-label">C: Validator</div>
+          <div class="ch-status">IDLE</div>
+          <div class="wipe-spark"></div>
+        </div>
+
+        <div class="chamber" id="ch-d">
+          <div class="ch-dot"></div>
+          <div class="ch-icon">◈</div>
+          <div class="ch-label">D: Auditor</div>
+          <div class="ch-status">IDLE</div>
+          <div class="wipe-spark"></div>
+        </div>
+
+        <div class="chamber" id="ch-e">
+          <div class="ch-dot"></div>
+          <div class="ch-icon">→</div>
+          <div class="ch-label">E: Interface</div>
+          <div class="ch-status">IDLE</div>
+          <div class="wipe-spark"></div>
+        </div>
+
+      </div><!-- /chamber-grid -->
+
+      <!-- LOG -->
+      <div class="packet-log" id="packet-log">
+        <div class="log-row">
+          <span class="log-ts">00:00.000</span>
+          <span class="log-ch">SYS_INIT</span>
+          <span class="log-msg t-sys">Bauta Valve initialized. Awaiting packet ingestion.</span>
+        </div>
+        <div class="log-row">
+          <span class="log-ts">00:00.001</span>
+          <span class="log-ch">SYS_INIT</span>
+          <span class="log-msg t-sys">Zero-persistence mode: ARMED. PII-blind: CONFIRMED.</span>
+        </div>
+        <span class="log-cursor"></span>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="monitor-controls">
+        <button class="btn-run" id="btn-run" onclick="runSieve()">▶ Run Sieve Demo</button>
+        <button class="btn-reset" id="btn-reset" onclick="resetSieve()">↺ Reset</button>
+        <span class="complete-msg" id="complete-msg">// STREAM → AETHER CLEAN ✓</span>
+      </div>
+    </div><!-- /bauta-monitor -->
+
+    <!-- ARCH NOTE -->
+    <div class="arch-note">
+      <div class="section-eyebrow" style="margin-bottom:14px;">Architecture</div>
+      <p>
+        The <b>Bauta Valve</b> is a modular five-chamber sieve. Each chamber is mathematically isolated —
+        <b class="violet">Chamber B (Anonymizer)</b> cannot access <b class="violet">Chamber A's</b> raw intake.
+        Memory is wiped at every gate via the <b class="blue">Zero-Persistence</b> protocol.
+        All sifting runs on-device via the <b class="blue">System on a Chip</b>,
+        ensuring no PII ever reaches the cloud.
+        The <b>Keating Model</b> captures Intent-to-Action maps exclusively from the clean Aether output.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== RIGHT: PITCH SIDEBAR ========== -->
+  <aside class="pitch-sidebar">
+
+    <div class="sb-section">
+      <h2>The Systemic Problem</h2>
+      <p>
+        1.1 billion websites create an <b>"Accessibility Tax"</b> in time and cognitive load.
+        Assistive technology remains linear, extractive of personal data,
+        and built for legal compliance — not for human agency.
+      </p>
+    </div>
+
+    <div class="sb-section">
+      <h2>The Inclusion Flywheel</h2>
+      <ul class="fw-steps">
+        <li><b>1. Usage:</b> Users navigate via the 100% accessible Sieve.</li>
+        <li><b>2. Capture:</b> Keating Model maps high-efficiency Intent-to-Action flows.</li>
+        <li><b>3. Clean:</b> Bauta Valve ensures data is PII-free and ethically cleared.</li>
+        <li><b>4. License:</b> Anonymized corpora licensed to train next-gen AI models.</li>
+      </ul>
+      <p class="fund-note">// The data funds the free tool.</p>
+    </div>
+
+    <div class="sb-section">
+      <h2>Stakeholder Wins</h2>
+      <table class="sh-table">
+        <tr><td>USER</td><td>100% agency, 0% cost, total privacy.</td></tr>
+        <tr><td>CREATOR</td><td>No Accessibility Tax or legal exposure.</td></tr>
+        <tr><td>FUNDER</td><td>Ownership of an ethically-sourced AI data pipeline.</td></tr>
+        <tr><td>REGULATOR</td><td>Proactive ADA / Equality Act compliance at scale.</td></tr>
+      </table>
+    </div>
+
+    <div class="sb-section">
+      <h2>The 2026 Engine</h2>
+      <ul class="spec-list">
+        <li><b>40+ TOPS NPU</b> Local, zero-persistence on-device AI processing.</li>
+        <li><b>&lt;10ms Latency</b> Required for visceral haptic "Presence."</li>
+        <li><b>&lt;1.5W Profile</b> Thermal safety for skin-contact wearables.</li>
+        <li><b>Wi-Fi 7</b> Sub-2ms wireless for motion-to-haptic sync.</li>
+        <li><b>16GB LPDDR5x</b> Unified memory for multimodal data streams.</li>
+      </ul>
+    </div>
+
+    <div class="sb-section">
+      <h2>Use Cases</h2>
+      <div class="use-cases">
+        <div class="use-case-card">
+          <span class="uc-tag">Night-Seeing</span>
+          <span class="uc-desc">Blind engineers designing 3D CAD via haptic spatialization of depth and geometry.</span>
+        </div>
+        <div class="use-case-card">
+          <span class="uc-tag">Night-Hearing</span>
+          <span class="uc-desc">Deaf sound designers "feeling" acoustic presence and mixing audio via haptic collars.</span>
+        </div>
+        <div class="use-case-card">
+          <span class="uc-tag">Neuro</span>
+          <span class="uc-desc">Bauta Valve as Sensory Firewall, filtering dark patterns into a Calm Reality stream.</span>
+        </div>
+        <div class="use-case-card">
+          <span class="uc-tag">Motor</span>
+          <span class="uc-desc">Intent Engine enlarging targets and smoothing gestures via predictive intent modeling.</span>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div><!-- /main-layout -->
+
+<!-- ===================== DEEP SPEC TABS ===================== -->
+<section class="deep-spec">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('hardware', this)">Hardware Specs</button>
+    <button class="tab-btn"        onclick="switchTab('haptics', this)">Haptic Signatures</button>
+    <button class="tab-btn"        onclick="switchTab('calibration', this)">Calibration Logic</button>
+    <button class="tab-btn"        onclick="switchTab('flywheel', this)">The Flywheel</button>
+  </div>
+
+  <!-- ─── TAB: HARDWARE ─── -->
+  <div class="tab-pane active" id="tab-hardware">
+    <div class="tab-inner">
+      <div class="tab-h">2026 SoC Target Specifications</div>
+      <p class="tab-desc">
+        To support the <b>Night-Seeing Haptic Sleeve</b> and real-time Night-Hearing visualizers, the SoC must
+        meet these minimum benchmarks. All processing is on-device — no raw sensory data leaves the Bauta chamber.
+        Cloud inference is <em>architecturally incompatible</em> with the Zero-Persistence standard.
+      </p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Specification</th>
+            <th>Purpose</th>
+            <th>2026 Platforms</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NPU (AI Engine)</td>
+            <td>40–100+ TOPS</td>
+            <td>Real-time AI Vision & Bauta Valve sifting</td>
+            <td>Snapdragon AR2 Gen 1, AMD Ryzen AI 9</td>
+          </tr>
+          <tr>
+            <td>Connectivity</td>
+            <td>Wi-Fi 7 / FastConnect 7800</td>
+            <td>Sub-10ms Motion-to-Haptic latency</td>
+            <td>Qualcomm FastConnect 7800</td>
+          </tr>
+          <tr>
+            <td>System Memory</td>
+            <td>16GB+ LPDDR5x Unified</td>
+            <td>High-bandwidth multimodal data streams</td>
+            <td>LPDDR5x / LPDDR4x</td>
+          </tr>
+          <tr>
+            <td>Power Profile</td>
+            <td>&lt;1.5W Total Platform</td>
+            <td>Thermal safety for skin-contact wearables</td>
+            <td>Qualcomm AR-dedicated SoCs</td>
+          </tr>
+          <tr>
+            <td>Actuator Bus</td>
+            <td>High-Density Piezoelectric</td>
+            <td>Driving spatial haptic frequencies (Skin-Stretch)</td>
+            <td>Piezo arrays, 2kHz+ sampling rate</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sub-h">Why On-Device Processing?</div>
+      <p class="tab-desc" style="margin-bottom:0">
+        Standard Bluetooth introduces latency spikes over 20ms — breaking the "presence" illusion for haptic users.
+        The Bauta Valve's Chamberized Sifting runs on the NPU so that sensitive sensory data —
+        visual intake, spatial maps, acoustic patterns — never leaves the local chamber.
+        <b>PII is not sent to the cloud because it never exists outside the chip.</b>
+      </p>
+    </div>
+  </div>
+
+  <!-- ─── TAB: HAPTIC SIGNATURES ─── -->
+  <div class="tab-pane" id="tab-haptics">
+    <div class="tab-inner">
+      <div class="tab-h">Haptic Frequency Mapping</div>
+      <p class="tab-desc">
+        To achieve <b>Digital Synesthesia</b>, the PUP protocol maps environmental meaning to specific haptic signatures
+        via Piezoelectric actuators — the 2026 gold standard for sub-ms response times and distinct texture generation.
+        The human forearm is most sensitive to vibrotactile frequencies between <b>150–300 Hz</b>,
+        with highest precision at the <em>wrist and elbow anchor points</em>.
+      </p>
+
+      <div class="sub-h">Frequency-to-Color Mapping (Chromesthesia)</div>
+      <div class="freq-map">
+        <div class="freq-row">
+          <span class="freq-label">VIOLET</span>
+          <div class="freq-track">
+            <div class="freq-fill" style="width:13%;background:linear-gradient(90deg,#3b0764,#7c3aed)">
+              <span>Primal, deep</span>
+            </div>
+          </div>
+          <span class="freq-hz">10–35 Hz · Low amp</span>
+        </div>
+        <div class="freq-row">
+          <span class="freq-label">RED</span>
+          <div class="freq-track">
+            <div class="freq-fill" style="width:13%;background:linear-gradient(90deg,#7f1d1d,#ef4444)">
+              <span>Urgent, warm</span>
+            </div>
+          </div>
+          <span class="freq-hz">10–35 Hz · High amp</span>
+        </div>
+        <div class="freq-row">
+          <span class="freq-label">GREEN</span>
+          <div class="freq-track">
+            <div class="freq-fill" style="width:67%;background:linear-gradient(90deg,#052e16,#34d399)">
+              <span>Growth, steady</span>
+            </div>
+          </div>
+          <span class="freq-hz">60–200 Hz · Moderate</span>
+        </div>
+        <div class="freq-row">
+          <span class="freq-label">BLUE/CYAN</span>
+          <div class="freq-track">
+            <div class="freq-fill" style="width:100%;background:linear-gradient(90deg,#082f49,#38bdf8)">
+              <span>Technical, crisp</span>
+            </div>
+          </div>
+          <span class="freq-hz">200–300 Hz · Pulsed</span>
+        </div>
+      </div>
+
+      <div class="sub-h">Spatial & Depth Mapping (Night-Seeing)</div>
+      <p class="tab-desc" style="margin-bottom:16px;">
+        The Keating Model translates distance into frequency shifts via a <b>negative monotonic correlation</b> —
+        as an object approaches, frequency increases to trigger a pre-cognitive proximity reflex.
+      </p>
+      <table class="data-table">
+        <thead><tr><th>Distance</th><th>Frequency</th><th>Haptic Signature</th><th>Placement</th></tr></thead>
+        <tbody>
+          <tr><td>Distant (&gt;10m)</td><td>10–20 Hz</td><td>Low "thrum"</td><td>Sleeve periphery</td></tr>
+          <tr><td>Proximal (&lt;2m)</td><td>250+ Hz</td><td>High "staccato"</td><td>High amplitude burst</td></tr>
+          <tr><td>Approach gradient</td><td>50→250 Hz sweep</td><td>Linear frequency ramp</td><td>Progressive wrist signal</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-h">Social & Intent Signatures (Night-Hearing)</div>
+      <table class="data-table">
+        <thead><tr><th>Source</th><th>Frequency</th><th>Texture</th></tr></thead>
+        <tbody>
+          <tr><td>Human Speech</td><td>150–180 Hz</td><td>"Bubbling" — mimics natural prosody rhythm for social presence</td></tr>
+          <tr><td>Emergency / Siren</td><td>300 Hz</td><td>Jagged, non-sinusoidal "Sharp Jolt" pulses</td></tr>
+          <tr><td>Ambient / Nature</td><td>10–50 Hz</td><td>Travelling ripples across full sleeve for environmental "Presence"</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-h">SoC Actuator Bus Requirements</div>
+      <p class="tab-desc" style="margin-bottom:0">
+        The SoC must drive the actuator bus at a minimum of <b>2kHz sampling rate</b> to avoid aliasing
+        in the 300Hz+ high-fidelity range. The <b>&lt;10ms</b> motion-to-haptic latency target
+        is the perceptual threshold for maintaining the "illusion of reality."
+        High-density actuator placement is prioritized at the <em>wrist and elbow</em> for maximum data throughput.
+      </p>
+    </div>
+  </div>
+
+  <!-- ─── TAB: CALIBRATION ─── -->
+  <div class="tab-pane" id="tab-calibration">
+    <div class="tab-inner">
+      <div class="tab-h">User-Twin Calibration Protocol</div>
+      <p class="tab-desc">
+        Unlike a settings menu, PUP uses <b>Stateful Calibration</b> to build a private, local profile —
+        the <em>User-Twin</em>. This profile never leaves the device's SoC.
+        The goal is to move from <em>Information Accessibility</em> to <em>Experiential Agency</em>:
+        an interface that learns the user's body, not the other way around.
+      </p>
+
+      <div class="sub-h">Calibration Flow</div>
+      <table class="data-table" style="margin-bottom:28px;">
+        <thead><tr><th>Step</th><th>Action</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1 · Spatial</td>
+            <td>Sleeve emits 10–300Hz sweep. User confirms their "high-fidelity" comfort zone.</td>
+            <td>Defines personal Haptic Signature for buttons and interaction primitives.</td>
+          </tr>
+          <tr>
+            <td>2 · Intent</td>
+            <td>User performs gesture toward a target ("urgent button, top-right quadrant").</td>
+            <td>Keating Model records Intent-to-Action map, enabling reverse interface generation.</td>
+          </tr>
+          <tr>
+            <td>3 · Seal</td>
+            <td>Bauta-Keating feedback loop runs across three representative user workflows.</td>
+            <td>User-Twin profile sealed in local Bauta Chamber. Zero-Persistence confirmed.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sub-h">Adaptive Calibration States</div>
+      <div class="cal-grid">
+        <div class="cal-card">
+          <div class="cal-need">Blind / Low-Vision</div>
+          <div class="cal-focus">Spatial Geometry</div>
+          <div class="cal-desc"><b>Night-Seeing:</b> Translating visual density into spatial pressures and haptic depth maps.</div>
+        </div>
+        <div class="cal-card">
+          <div class="cal-need">Hearing-Impaired</div>
+          <div class="cal-focus">Temporal Presence</div>
+          <div class="cal-desc"><b>Night-Hearing:</b> Translating acoustic tone and rhythm into visceral haptic frequencies.</div>
+        </div>
+        <div class="cal-card">
+          <div class="cal-need">Neurodivergent</div>
+          <div class="cal-focus">Cognitive Load</div>
+          <div class="cal-desc"><b>Cognitive Filtering:</b> Dampening dark patterns and chaotic layouts into a Calm Reality stream.</div>
+        </div>
+        <div class="cal-card">
+          <div class="cal-need">Limited Mobility</div>
+          <div class="cal-focus">Predictive Intent</div>
+          <div class="cal-desc"><b>Intent Engine:</b> Enlarging targets and smoothing gestures based on predicted click intent.</div>
+        </div>
+      </div>
+
+      <div class="sub-h">Zero-Persistence Guarantee</div>
+      <p class="tab-desc" style="margin-bottom:0">
+        All calibration logic follows the Zero-Persistence model. No User-Twin profile ever exists
+        outside its dedicated Bauta Chamber. Raw telemetry, audio intake, and visual data are wiped
+        at every gate — only the anonymized Intent-to-Action map exits as <b>Ethical Data</b>,
+        pre-cleared for GDPR/CCPA, ready for licensing.
+      </p>
+    </div>
+  </div>
+
+  <!-- ─── TAB: FLYWHEEL ─── -->
+  <div class="tab-pane" id="tab-flywheel">
+    <div class="tab-inner">
+      <div class="tab-h">The Inclusion Flywheel</div>
+      <p class="tab-desc">
+        PUP is not a charity model. The accessibility tool is <b>self-funding</b> through a data licensing
+        flywheel that generates economic value from the act of inclusion itself.
+        Each user interaction creates ethically-cleared training data that funds the free tool for the next user.
+      </p>
+
+      <div class="fw-diagram">
+        <div class="fw-node">
+          <div class="fw-num">01</div>
+          <div class="fw-name">Usage</div>
+          <div class="fw-desc">Users navigate via the 100% accessible Sieve interface.</div>
+        </div>
+        <div class="fw-arr">→</div>
+        <div class="fw-node">
+          <div class="fw-num">02</div>
+          <div class="fw-name">Capture</div>
+          <div class="fw-desc">Keating Model maps high-efficiency Intent-to-Action workflows.</div>
+        </div>
+        <div class="fw-arr">→</div>
+        <div class="fw-node">
+          <div class="fw-num">03</div>
+          <div class="fw-name">Clean</div>
+          <div class="fw-desc">Bauta Valve strips all PII. Data exits as Ethical Data, GDPR/CCPA ready.</div>
+        </div>
+        <div class="fw-arr">→</div>
+        <div class="fw-node">
+          <div class="fw-num">04</div>
+          <div class="fw-name">License</div>
+          <div class="fw-desc">Anonymized corpora licensed to LLM and robotics developers.</div>
+        </div>
+        <div class="fw-arr">→</div>
+        <div class="fw-node">
+          <div class="fw-num">05</div>
+          <div class="fw-name">Fund</div>
+          <div class="fw-desc">Revenue funds the free tool. Flywheel accelerates.</div>
+        </div>
+      </div>
+
+      <div class="sub-h">Stakeholder Economics</div>
+      <table class="data-table">
+        <thead><tr><th>Stakeholder</th><th>What They Give</th><th>What They Get</th></tr></thead>
+        <tbody>
+          <tr><td>End User</td><td>Anonymized workflow data (zero PII)</td><td>Free, private, universal access tool</td></tr>
+          <tr><td>Creator / Business</td><td>Nothing — compliance is automatic</td><td>ADA / Equality Act risk eliminated</td></tr>
+          <tr><td>Funder / Investor</td><td>Capital to scale the SoC pipeline</td><td>Ownership of ethically-sourced AI training corpus</td></tr>
+          <tr><td>AI Developer</td><td>License fee for corpus</td><td>High-quality intent-mapped human workflow data</td></tr>
+          <tr><td>Regulator</td><td>Nothing</td><td>Proactive ADA compliance at population scale</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-h">The Ethical Moat</div>
+      <p class="tab-desc" style="margin-bottom:0">
+        The Bauta Valve is not just a privacy feature — it is the <b>economic moat</b>.
+        Any competitor collecting similar intent data without Zero-Persistence protections
+        faces GDPR/CCPA liability that makes their corpus legally untradeable.
+        PUP's data is <b>architecturally clean by design, not by policy.</b>
+        That distinction is defensible in court and in a term sheet.
+      </p>
+    </div>
+  </div>
+
+</section><!-- /deep-spec -->
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="footer-quote">
+    "Exclusion is a bug in the interface between the human and the world. We are shipping the universal patch."
+  </div>
+  <div class="footer-meta">
+    Project Universal Protocol<br>
+    Bauta-Keating Architecture v2026.Q1<br>
+    Nyx Sieve // GitHub Pages Demo
+  </div>
+</footer>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+  // ─── CHAMBER DEFINITIONS ───
+  const CHAMBERS = [
+    {
+      id: 'ch-a', tag: 'A_INTAKE',
+      msgs: [
+        { t: 'proc', m: 'Raw visual packet received from Semantic Proxy.' },
+        { t: 'proc', m: 'Hierarchical scan initiated — AI Vision model active.' },
+        { t: 'proc', m: 'Intent signal extracted. Proceeding to anonymization.' },
+      ]
+    },
+    {
+      id: 'ch-b', tag: 'B_ANON',
+      msgs: [
+        { t: 'proc', m: 'PII signature detected — hashing user identifiers.' },
+        { t: 'proc', m: 'Biometric markers nulled. Geolocation stripped.' },
+        { t: 'proc', m: 'PII-blind confirmation: PASS.' },
+      ]
+    },
+    {
+      id: 'ch-c', tag: 'C_VALID',
+      msgs: [
+        { t: 'proc', m: 'Schema integrity check — running GDPR/CCPA flags.' },
+        { t: 'proc', m: 'Ethical data classification: CONFIRMED.' },
+        { t: 'proc', m: 'Intent signature structure: VALID.' },
+      ]
+    },
+    {
+      id: 'ch-d', tag: 'D_AUDIT',
+      msgs: [
+        { t: 'proc', m: 'Recursive audit loop initiated.' },
+        { t: 'proc', m: 'Cross-chamber isolation check: PASS.' },
+        { t: 'proc', m: 'Zero-persistence certification: CERTIFIED.' },
+      ]
+    },
+    {
+      id: 'ch-e', tag: 'E_IFACE',
+      msgs: [
+        { t: 'proc', m: 'Composing Aether stream from clean payload.' },
+        { t: 'proc', m: 'Haptic layer frequency map: APPLIED.' },
+        { t: 'proc', m: 'Clean output ready for Keating Model capture.' },
+      ]
+    }
+  ];
+
+  let running = false;
+  let t0 = 0;
+
+  function ts() {
+    const ms = Date.now() - t0;
+    const s  = Math.floor(ms / 1000);
+    const m  = ms % 1000;
+    return `${String(s).padStart(2,'0')}:${String(m).padStart(3,'0')}`;
+  }
+
+  function addLog(tag, msg, type) {
+    const log = document.getElementById('packet-log');
+    const cursor = log.querySelector('.log-cursor');
+    if (cursor) cursor.remove();
+
+    const row = document.createElement('div');
+    row.className = 'log-row';
+    row.innerHTML =
+      `<span class="log-ts">${ts()}</span>` +
+      `<span class="log-ch">${tag.padEnd(10).substring(0,10)}</span>` +
+      `<span class="log-msg t-${type}">${msg}</span>`;
+    log.appendChild(row);
+
+    const c = document.createElement('span');
+    c.className = 'log-cursor';
+    log.appendChild(c);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  let statsTimer = null;
+
+  function tickStats() {
+    const tops = (40 + Math.random() * 7).toFixed(1);
+    const lat  = (5.8 + Math.random() * 2.8).toFixed(1);
+    const pwr  = (0.72 + Math.random() * 0.55).toFixed(2);
+    document.getElementById('stat-tops').textContent = tops;
+    document.getElementById('stat-lat').textContent  = lat;
+    document.getElementById('stat-pwr').textContent  = pwr;
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  async function runSieve() {
+    if (running) return;
+    running = true;
+    t0 = Date.now();
+
+    document.getElementById('btn-run').disabled = true;
+    document.getElementById('complete-msg').classList.remove('show');
+    document.getElementById('btn-reset').classList.remove('show');
+
+    statsTimer = setInterval(tickStats, 380);
+    addLog('SYS', 'Packet ingestion START — Bauta sieve engaged.', 'sys');
+    await sleep(350);
+
+    for (const chamber of CHAMBERS) {
+      const el = document.getElementById(chamber.id);
+
+      // Activate
+      el.classList.add('state-active');
+      el.querySelector('.ch-status').textContent = 'PROCESSING';
+
+      for (const { t, m } of chamber.msgs) {
+        addLog(chamber.tag, m, t);
+        await sleep(360);
+      }
+
+      // Wipe transition
+      el.classList.remove('state-active');
+      el.classList.add('state-wiping');
+      el.querySelector('.ch-status').textContent = 'WIPING...';
+      addLog(chamber.tag, 'Memory wipe initiated — gate sealing.', 'wipe');
+      await sleep(460);
+
+      el.classList.remove('state-wiping');
+      el.classList.add('state-done');
+      el.querySelector('.ch-status').textContent = 'WIPED ✓';
+
+      await sleep(140);
+    }
+
+    clearInterval(statsTimer);
+
+    addLog('SYS', '▶▶ STREAM → AETHER CLEAN. Zero PII. Corpora ready to license.', 'ok');
+
+    document.getElementById('stat-tops').textContent = '42.0';
+    document.getElementById('stat-lat').textContent  = '7.1';
+    document.getElementById('stat-pwr').textContent  = '0.91';
+
+    document.getElementById('complete-msg').classList.add('show');
+    document.getElementById('btn-reset').classList.add('show');
+    running = false;
+  }
+
+  function resetSieve() {
+    clearInterval(statsTimer);
+
+    CHAMBERS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      el.classList.remove('state-active', 'state-wiping', 'state-done');
+      el.querySelector('.ch-status').textContent = 'IDLE';
+    });
+
+    document.getElementById('packet-log').innerHTML = `
+      <div class="log-row">
+        <span class="log-ts">00:00.000</span>
+        <span class="log-ch">SYS_INIT</span>
+        <span class="log-msg t-sys">Bauta Valve initialized. Awaiting packet ingestion.</span>
+      </div>
+      <div class="log-row">
+        <span class="log-ts">00:00.001</span>
+        <span class="log-ch">SYS_INIT</span>
+        <span class="log-msg t-sys">Zero-persistence mode: ARMED. PII-blind: CONFIRMED.</span>
+      </div>
+      <span class="log-cursor"></span>
+    `;
+
+    document.getElementById('btn-run').disabled = false;
+    document.getElementById('btn-reset').classList.remove('show');
+    document.getElementById('complete-msg').classList.remove('show');
+    document.getElementById('stat-tops').textContent = '42';
+    document.getElementById('stat-lat').textContent  = '7.2';
+    document.getElementById('stat-pwr').textContent  = '0.91';
+    running = false;
+  }
+
+  // ─── TABS ───
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+</script>
+
+</body>
+</html>
